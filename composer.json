@@ -1,0 +1,20 @@
+{
+    "name": "larakit/sf-bootstrap-dialog",
+    "description": "[Larakit][lk-staticfiles] sf-bootstrap-dialog",
+    "license": "MIT",
+    "version": "1.35.2",
+    "authors": [
+        {
+            "name": "Alexey Berdnikov",
+            "email": "aberdnikov@gmail.com"
+        }
+    ],    
+    "require": {
+        "larakit/sf-bootstrap": "*"
+    },
+    "autoload": {
+        "files": [
+            "init.php"
+        ]
+    }
+}
