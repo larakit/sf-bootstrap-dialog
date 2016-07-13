@@ -13,6 +13,9 @@
         "larakit/sf-bootstrap": "*"
     },
     "autoload": {
+        "psr-4": {
+            "BootstrapDialog\\": "src/"
+        },
         "files": [
             "init.php"
         ]
