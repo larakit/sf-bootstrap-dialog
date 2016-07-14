@@ -1,6 +1,8 @@
 <?php
 \Larakit\StaticFiles\Manager::package('larakit/sf-bootstrap-dialog')
     ->usePackage('larakit/sf-bootstrap')
-    ->jsPackage('bootstrap-dialog.min.css')
-    ->cssPackage('bootstrap-dialog.min.js')
+    ->usePackage('larakit/sf-larakit-js')
+    ->cssPackage('bootstrap-dialog.min.css')
+    ->jsPackage('bootstrap-dialog.min.js')
+    ->jsPackage('init.js')
     ->setSourceDir('public');

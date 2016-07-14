@@ -10,7 +10,8 @@
         }
     ],    
     "require": {
-        "larakit/sf-bootstrap": "*"
+        "larakit/sf-bootstrap": "*",
+        "larakit/sf-larakit-js": "*"
     },
     "autoload": {
         "psr-4": {

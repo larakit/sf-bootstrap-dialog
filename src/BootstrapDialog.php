@@ -9,29 +9,136 @@
 
 namespace BootstrapDialog;
 
+use Illuminate\Database\Query\JsonExpression;
+
 class BootstrapDialog {
 
     protected $title;
+    protected $_ret        = [];
     protected $message;
-    protected $type     = 'type-default';
-    protected $size     = 'size-normal';
-    protected $cssClass = null;
-    protected $spinicon = null;
-    protected $data     = [];
-    protected $onshow   = null;
+    protected $type        = 'type-default';
+    protected $size        = 'size-normal';
+    protected $cssClass    = null;
+    protected $spinicon    = 'glyphicon glyphicon-asterisk';
+    protected $data        = [];
+    protected $onshow      = null;
+    protected $onshown     = null;
+    protected $onhide      = null;
+    protected $onhidden    = null;
+    protected $autodestroy = true;
+    protected $description = null;
+    protected $nl2br       = true;
+    protected $buttons     = [];
 
-    function send() {
-        $ret = [];
-        $ret[] = 'title: \'WARNING\'';
-        $ret[] = 'onshow: function alert(\'123\')';
-        return '{'.implode(','.PHP_EOL, $ret).'}';
+    static function factory(){
+        return new \BootstrapDialog\BootstrapDialog();
+    }
+    
+    /**
+     * @param null $onshown
+     *
+     * @return BootstrapDialog;
+     */
+    public function setOnshown($onshown) {
+        $this->onshown = $onshown;
+
+        return $this;
     }
 
     /**
-     * @return null
+     * @param null $onhide
+     *
+     * @return BootstrapDialog;
      */
-    public function getOnshow() {
-        return $this->onshow;
+    public function setOnhide($onhide) {
+        $this->onhide = $onhide;
+
+        return $this;
+    }
+
+    /**
+     * @param null $onhidden
+     *
+     * @return BootstrapDialog;
+     */
+    public function setOnhidden($onhidden) {
+        $this->onhidden = $onhidden;
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $autodestroy
+     *
+     * @return BootstrapDialog;
+     */
+    public function setAutodestroy($autodestroy) {
+        $this->autodestroy = $autodestroy;
+
+        return $this;
+    }
+
+    /**
+     * @param null $description
+     *
+     * @return BootstrapDialog;
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @param boolean $nl2br
+     *
+     * @return BootstrapDialog;
+     */
+    public function setNl2br($nl2br) {
+        $this->nl2br = $nl2br;
+
+        return $this;
+    }
+
+    function send() {
+        $this->responseProperty('type');
+        $this->responseProperty('size');
+        $this->responseProperty('cssClass');
+        $this->responseProperty('title');
+        $this->responseProperty('message');
+        $this->responseProperty('buttons');
+        $this->responseProperty('closable');
+        $this->responseProperty('spinicon');
+        $this->responseProperty('data');
+        $this->responseFunction('onshow');
+        $this->responseFunction('onshown');
+        $this->responseFunction('onhide');
+        $this->responseFunction('onhidden');
+        $this->responseProperty('autodestroy');
+        $this->responseProperty('description');
+        $this->responseProperty('nl2br');
+
+        return response('BootstrapDialog.show({' . implode(',', $this->_ret) . '})',
+            200,
+            ['Content-Type' => 'application/json',]
+        );
+
+    }
+
+    protected function responseProperty($name) {
+        $val = $this->$name;
+        if(!$val) {
+            return null;
+        }
+        $this->_ret[$name] = '"' . $name . '":' . json_encode($val);
+    }
+
+    protected function responseFunction($name) {
+        $val = $this->$name;
+        if(!$val) {
+            return null;
+        }
+        $this->_ret[$name] = '"' . $name . '":' . 'function (){'.$val.'}';
     }
 
     /**
@@ -68,13 +175,6 @@ class BootstrapDialog {
     protected $closable = true;
 
     /**
-     * @return array
-     */
-    public function getData() {
-        return $this->data;
-    }
-
-    /**
      * @param array $data
      *
      * @return BootstrapDialog;
@@ -86,28 +186,14 @@ class BootstrapDialog {
     }
 
     /**
-     * @return boolean
-     */
-    public function isClosable() {
-        return $this->closable;
-    }
-
-    /**
      * @param boolean $closable
      *
      * @return BootstrapDialog;
      */
     public function setClosable($closable) {
-        $this->closable = $closable;
+        $this->closable = (bool) $closable;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSize() {
-        return $this->size;
     }
 
     /**
@@ -138,13 +224,6 @@ class BootstrapDialog {
     }
 
     /**
-     * @return null
-     */
-    public function getCssClass() {
-        return $this->cssClass;
-    }
-
-    /**
      * @param null $cssClass
      *
      * @return BootstrapDialog;
@@ -153,13 +232,6 @@ class BootstrapDialog {
         $this->cssClass = $cssClass;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getType() {
-        return $this->type;
     }
 
     /**
@@ -217,13 +289,6 @@ class BootstrapDialog {
     }
 
     /**
-     * @return mixed
-     */
-    public function getMessage() {
-        return $this->message;
-    }
-
-    /**
      * @param mixed $message
      *
      * @return BootstrapDialog;
@@ -232,13 +297,6 @@ class BootstrapDialog {
         $this->message = $message;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTitle() {
-        return $this->title;
     }
 
     /**
