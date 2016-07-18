@@ -33,7 +33,7 @@ class BootstrapDialog {
     static function factory(){
         return new \BootstrapDialog\BootstrapDialog();
     }
-    
+
     /**
      * @param null $onshown
      *
