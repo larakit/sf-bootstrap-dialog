@@ -9,8 +9,6 @@
 
 namespace BootstrapDialog;
 
-use Illuminate\Database\Query\JsonExpression;
-
 class BootstrapDialog {
 
     protected $title;
@@ -34,6 +32,12 @@ class BootstrapDialog {
         return new \BootstrapDialog\BootstrapDialog();
     }
 
+
+    function addButton(BootstrapDialogButton $button){
+        $this->buttons[] = $button->get();
+        return $this;
+    }
+    
     /**
      * @param null $onshown
      *
@@ -106,7 +110,7 @@ class BootstrapDialog {
         $this->responseProperty('cssClass');
         $this->responseProperty('title');
         $this->responseProperty('message');
-        $this->responseProperty('buttons');
+        $this->responseProperty('buttons',true, false, true);
         $this->responseProperty('closable');
         $this->responseProperty('spinicon');
         $this->responseProperty('data');
@@ -117,7 +121,6 @@ class BootstrapDialog {
         $this->responseProperty('autodestroy');
         $this->responseProperty('description');
         $this->responseProperty('nl2br');
-
         return response('BootstrapDialog.show({' . implode(',', $this->_ret) . '})',
             200,
             ['Content-Type' => 'application/json',]
@@ -125,12 +128,21 @@ class BootstrapDialog {
 
     }
 
-    protected function responseProperty($name) {
+    protected function responseProperty($name, $is_implode=false, $is_encode=true, $is_array=false) {
         $val = $this->$name;
-        if(!$val) {
+        if(is_null($val)) {
             return null;
         }
-        $this->_ret[$name] = '"' . $name . '":' . json_encode($val);
+        if($is_implode){
+            $val = implode(',', $val);
+        }
+        if($is_encode){
+            $val = json_encode($val);
+        }
+        if($is_array){
+            $val = '['.$val.']';
+        }
+        $this->_ret[$name] = '"' . $name . '":' . $val;
     }
 
     protected function responseFunction($name) {
@@ -138,7 +150,7 @@ class BootstrapDialog {
         if(!$val) {
             return null;
         }
-        $this->_ret[$name] = '"' . $name . '":' . 'function (){'.$val.'}';
+        $this->_ret[$name] = '"' . $name . '":' . 'function(dialog){'.$val.'}';
     }
 
     /**
@@ -294,7 +306,7 @@ class BootstrapDialog {
      * @return BootstrapDialog;
      */
     public function setMessage($message) {
-        $this->message = $message;
+        $this->message = $message.'';
 
         return $this;
     }
