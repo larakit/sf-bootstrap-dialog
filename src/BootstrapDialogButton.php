@@ -26,7 +26,7 @@ class BootstrapDialogButton {
      *
      * @return BootstrapDialogButton
      */
-    static function factory($label = null) {
+    static function factory($label = 'Закрыть') {
         return new \BootstrapDialog\BootstrapDialogButton($label);
     }
 
@@ -158,6 +158,10 @@ class BootstrapDialogButton {
         $this->action = file_get_contents($action_file);
 
         return $this;
+    }
+
+    public function setActionFormSubmit() {
+        return $this->setActionFile(base_path('vendor/larakit/lk/src/javascripts/crud-form-submit.js'));
     }
 
 }

@@ -25,7 +25,7 @@ class BootstrapDialog {
     protected $onhidden    = null;
     protected $autodestroy = true;
     protected $description = null;
-    protected $nl2br       = true;
+    protected $nl2br       = false;
     protected $buttons     = [];
 
     static function factory() {
@@ -148,7 +148,7 @@ class BootstrapDialog {
 
     protected function responseFunction($name, $ls_js = false) {
         $val = $this->$name;
-        if(!$val&&!$ls_js) {
+        if(!$val && !$ls_js) {
             return null;
         }
         $this->_ret[$name] = '"' . $name . '":' . 'function(dialog){' . ($ls_js ? 'LarakitJs.fire();' : '') . $val . '}';
@@ -232,6 +232,15 @@ class BootstrapDialog {
      */
     public function setSizeLarge() {
         $this->size = 'size-large';
+
+        return $this;
+    }
+
+    /**
+     * @return BootstrapDialog;
+     */
+    public function setSizeSmall() {
+        $this->size = 'size-small';
 
         return $this;
     }
