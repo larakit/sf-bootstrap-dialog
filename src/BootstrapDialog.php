@@ -11,22 +11,23 @@ namespace BootstrapDialog;
 
 class BootstrapDialog {
 
-    protected $title;
     protected $_ret        = [];
-    protected $message;
-    protected $type        = 'type-default';
-    protected $size        = 'size-normal';
+    protected $autodestroy = true;
+    protected $buttons     = [];
+    protected $closable = true;
     protected $cssClass    = null;
-    protected $spinicon    = 'glyphicon glyphicon-asterisk';
     protected $data        = [];
+    protected $description = null;
+    protected $message;
+    protected $nl2br       = false;
+    protected $onhidden    = null;
+    protected $onhide      = null;
     protected $onshow      = null;
     protected $onshown     = null;
-    protected $onhide      = null;
-    protected $onhidden    = null;
-    protected $autodestroy = true;
-    protected $description = null;
-    protected $nl2br       = false;
-    protected $buttons     = [];
+    protected $size        = 'size-normal';
+    protected $spinicon    = 'glyphicon glyphicon-asterisk';
+    protected $title;
+    protected $type        = 'type-default';
 
     static function factory() {
         return new \BootstrapDialog\BootstrapDialog();
@@ -151,7 +152,13 @@ class BootstrapDialog {
         if(!$val && !$ls_js) {
             return null;
         }
-        $this->_ret[$name] = '"' . $name . '":' . 'function(dialog){' . ($ls_js ? 'LarakitJs.fire();' : '') . $val . '}';
+        $this->_ret[$name] = '"' . $name . '":' . 'function(dialog){' . ($ls_js ? 'LarakitJs.fire();
+        var $form = dialog.getModalBody().find("form");
+        $form.on("submit", function(){
+            dialog.getModalFooter().find(".js-submit").trigger("click");
+            return false;
+        });
+        ' : '') . $val . '}';
     }
 
     /**
@@ -184,8 +191,6 @@ class BootstrapDialog {
 
         return $this;
     }
-
-    protected $closable = true;
 
     /**
      * @param array $data

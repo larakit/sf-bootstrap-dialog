@@ -11,9 +11,10 @@ namespace BootstrapDialog;
 
 class BootstrapDialogButton {
 
-    protected $label    = 'Cancel';
-    protected $cssClass = 'btn-default';
     protected $action   = 'dialog.close();';
+    protected $cssClass = 'btn-default';
+    protected $hotkey   = null;
+    protected $label    = 'Cancel';
 
     function __construct($label = null) {
         if($label) {
@@ -34,9 +35,27 @@ class BootstrapDialogButton {
         $ret   = [];
         $ret[] = '"label":"' . $this->label . '"';
         $ret[] = '"action":' . 'function(dialog){' . $this->action . '}';
+        if($this->hotkey) {
+            $ret[] = '"hotkey":' . $this->hotkey . '';
+        }
         $ret[] = '"cssClass":"' . $this->cssClass . '"';
 
         return '{' . implode(',', $ret) . '}';
+    }
+
+    public function setHotkeyEnter() {
+        return $this->setHotkey(13);
+    }
+
+    /**
+     * @param null $hotkey
+     *
+     * @return BootstrapDialogButton;
+     */
+    public function setHotkey($hotkey) {
+        $this->hotkey = $hotkey;
+
+        return $this;
     }
 
     /**
@@ -57,6 +76,54 @@ class BootstrapDialogButton {
             ->removeClass('btn-danger')
             ->removeClass('btn-info')
             ->removeClass('btn-warning');
+    }
+
+    /**
+     * Removes the given CSS class(es) from the element
+     *
+     * @param string|array $class Class name, multiple class names separated by
+     *                            whitespace, array of class names
+     *
+     * @return $this
+     */
+    public function removeClass($class) {
+        if(!is_array($class)) {
+            $class = preg_split('/\s+/', $class, null, PREG_SPLIT_NO_EMPTY);
+        }
+        $curClass       = array_diff(
+            preg_split(
+                '/\s+/', $this->cssClass, null, PREG_SPLIT_NO_EMPTY
+            ),
+            $class
+        );
+        $this->cssClass = implode(' ', $curClass);
+
+        return $this;
+    }
+
+    /**
+     * Adds the given CSS class(es) to the element
+     *
+     * @param string|array $class Class name, multiple class names separated by
+     *                            whitespace, array of class names
+     *
+     * @return $this
+     */
+    public function addClass($class) {
+        if(!is_array($class)) {
+            $class = preg_split('/\s+/', $class, null, PREG_SPLIT_NO_EMPTY);
+        }
+        $curClass = preg_split(
+            '/\s+/', $this->cssClass, null, PREG_SPLIT_NO_EMPTY
+        );
+        foreach($class as $c) {
+            if(!in_array($c, $curClass)) {
+                $curClass[] = $c;
+            }
+        }
+        $this->cssClass = implode(' ', $curClass);
+
+        return $this;
     }
 
     function addClassBtnSuccess() {
@@ -96,54 +163,6 @@ class BootstrapDialogButton {
     }
 
     /**
-     * Adds the given CSS class(es) to the element
-     *
-     * @param string|array $class Class name, multiple class names separated by
-     *                            whitespace, array of class names
-     *
-     * @return $this
-     */
-    public function addClass($class) {
-        if(!is_array($class)) {
-            $class = preg_split('/\s+/', $class, null, PREG_SPLIT_NO_EMPTY);
-        }
-        $curClass = preg_split(
-            '/\s+/', $this->cssClass, null, PREG_SPLIT_NO_EMPTY
-        );
-        foreach($class as $c) {
-            if(!in_array($c, $curClass)) {
-                $curClass[] = $c;
-            }
-        }
-        $this->cssClass = implode(' ', $curClass);
-
-        return $this;
-    }
-
-    /**
-     * Removes the given CSS class(es) from the element
-     *
-     * @param string|array $class Class name, multiple class names separated by
-     *                            whitespace, array of class names
-     *
-     * @return $this
-     */
-    public function removeClass($class) {
-        if(!is_array($class)) {
-            $class = preg_split('/\s+/', $class, null, PREG_SPLIT_NO_EMPTY);
-        }
-        $curClass       = array_diff(
-            preg_split(
-                '/\s+/', $this->cssClass, null, PREG_SPLIT_NO_EMPTY
-            ),
-            $class
-        );
-        $this->cssClass = implode(' ', $curClass);
-
-        return $this;
-    }
-
-    /**
      * @param mixed $action
      *
      * @return BootstrapDialogButton;
@@ -154,14 +173,17 @@ class BootstrapDialogButton {
         return $this;
     }
 
+    public function setActionFormSubmit() {
+        return $this->setActionFile(base_path('vendor/larakit/lk/src/javascripts/crud-form-submit.js'))
+            ->addClass('js-submit')
+//            ->setHotkeyEnter()
+            ;
+    }
+
     public function setActionFile($action_file) {
         $this->action = file_get_contents($action_file);
 
         return $this;
-    }
-
-    public function setActionFormSubmit() {
-        return $this->setActionFile(base_path('vendor/larakit/lk/src/javascripts/crud-form-submit.js'));
     }
 
 }
