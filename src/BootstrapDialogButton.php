@@ -174,7 +174,7 @@ class BootstrapDialogButton {
     }
 
     public function setActionFormSubmit() {
-        return $this->setActionFile(base_path('vendor/larakit/lk/src/javascripts/crud-form-submit.js'))
+        return $this->setActionFile(base_path('vendor/larakit/lk-admin/src/javascripts/crud-form-submit.js'))
             ->addClass('js-submit')
 //            ->setHotkeyEnter()
             ;
